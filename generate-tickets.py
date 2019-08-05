@@ -4,6 +4,7 @@ import random
 from datetime import timedelta, datetime
 from random import randrange
 
+#Raise exception when script not run in correct format
 if (len(sys.argv)!=3):
     raise Exception('Please input the number of activities and filename to save to as paramaters in order to run this script. Follow this format: generate-tickets 1000 myjsonfile.json')
 
@@ -114,6 +115,7 @@ def generateLongActivity():
     }
     return a
 
+#Generating activities data in list of dicts
 for i in range(activitiesCount):
     longOrShort = random.randint(0,1)
     if (longOrShort==0):
@@ -122,7 +124,7 @@ for i in range(activitiesCount):
         activity = generateShortActivity()
     activities.append(activity)
 
-
+#Generating and assembling JSON data
 data = {
     "metadata":{
       "start_at": d1+" + 0000",
@@ -132,11 +134,10 @@ data = {
     "activities_data": activities
 }
 
+#save json data to file provided in command line
 with open(sys.argv[2], 'w') as f:
        json.dump(data, f)
 
-# convert into JSON:
+# Print resulting JSON:
 y = json.dumps(data)
-
-# the result is a JSON string:
 print(y)
