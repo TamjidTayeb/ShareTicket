@@ -4,17 +4,17 @@ import random
 from datetime import timedelta, datetime
 from random import randrange
 
-#Raise exception when script not run in correct format
+# Raise exception when script not run in correct format
 if (len(sys.argv)!=3):
     raise Exception('Please input the number of activities and filename to save to as paramaters in order to run this script. Follow this format: generate-tickets 1000 myjsonfile.json')
 
-#Array of activities
+# Array of activities
 activities = []
 activitiesCount = int(sys.argv[1])
-#Start and End Time
+# Start and End Time
 d1 = '1/1/2017 12:00 AM'
 d2 = '2/1/2018 11:59 PM'
-#All possible column values
+# All possible column values
 performerTypes = ["user","admin","service worker"]
 categories = ["Phone","Web","Walk in"]
 issueTypes = ["incident","complaint","enquiry"]
@@ -48,7 +48,7 @@ adresses = [
   "506 State Road, North Dartmouth MA 2747",
   "742 Main Street, North Oxford MA 1537"
   ]
-#Arrays of different ids
+# Arrays of different ids
 agentIds = []
 ticketIds = []
 performerIds = []
@@ -76,13 +76,14 @@ def generateID(array):
     array.append(id)
     return id
 
-
+# Added extra field for short and long activities called ACTIVITY_TYPE which represents if it is long(1) or short(0)
 def generateShortActivity():
     a = {
             "performed_at":randomDate(d1,d2),
             "ticket_id":generateID(ticketIds),
             "performer_type":random.choice(performerTypes),
             "performer_id":generateID(performerIds),
+            "activity_type":0,
             "activity": {
                 "note": {
                     "id": generateID(noteIds),
@@ -98,6 +99,7 @@ def generateLongActivity():
              "ticket_id":generateID(ticketIds),
              "performer_type":random.choice(performerTypes),
              "performer_id":generateID(performerIds),
+            "activity_type":1,
             "activity":{
                 "shipping_address":random.choice(adresses),
                 "shipment_date":randomDate(d1,d2),
@@ -115,16 +117,16 @@ def generateLongActivity():
     }
     return a
 
-#Generating activities data in list of dicts
+# Generating activities data in list of dicts
 for i in range(activitiesCount):
     longOrShort = random.randint(0,1)
-    if (longOrShort==0):
+    if (longOrShort==1):
         activity = generateLongActivity()
     else:
         activity = generateShortActivity()
     activities.append(activity)
 
-#Generating and assembling JSON data
+# Generating and assembling JSON data
 data = {
     "metadata":{
       "start_at": d1+" + 0000",
@@ -134,10 +136,6 @@ data = {
     "activities_data": activities
 }
 
-#save json data to file provided in command line
+# save json data to file provided in command line
 with open(sys.argv[2], 'w') as f:
        json.dump(data, f)
-
-# Print resulting JSON:
-y = json.dumps(data)
-print(y)
