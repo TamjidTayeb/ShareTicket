@@ -12,25 +12,57 @@ tickets = data["activities_data"]
 
 # Add activity to short_activity_table
 def addShort():
+    return 1
     print("short")
 
 # Add activity to long_activity_table
 def addLong():
+    return 1
     print("long")
 
 conn = sqlite3.connect("db.sqlite")
 c = conn.cursor()
 
-# c.execute(
-#     """CREATE TABLE tickets (
-#             ticket_id integer,
-#             activity_type integer,
-#             performer_type text,
-#             performer_id integer,
-#             performed_at text
-#     )"""
-# )
-c.execute("INSERT INTO tickets VALUES (1,1,'lol',2,'your mum')")
+c.execute(
+    """CREATE TABLE IF NOT EXISTS tickets (
+            ticket_id integer PRIMARY KEY,
+            activity_type integer,
+            performer_type text,
+            performer_id integer,
+            performed_at text
+    )"""
+)
+
+c.execute(
+    """CREATE TABLE IF NOT EXISTS short_activities (
+            ticket_id integer references tickets(ticket_id) PRIMARY KEY,
+            note_id integer,
+            note_type integer
+    )"""
+)
+
+c.execute(
+    """CREATE TABLE IF NOT EXISTS long_activities (
+            ticket_id integer references tickets(ticket_id) PRIMARY KEY,
+            agent_id integer,
+            status text,
+            requester integer,
+            product text,
+            contacted_customer BOOLEAN,
+            category text,
+            group_of text,
+            priority integer,
+            source integer,
+            shipment_date text,
+            issue_type text,
+            shipping_address text
+    )"""
+)
+# c.execute("DROP TABLE long_activities")
+c.execute("SELECT * FROM long_activities")
+print(c.fetchall())
+c.execute("SELECT * FROM short_activities")
+print(c.fetchall())
 c.execute("SELECT * FROM tickets")
 print(c.fetchall())
 conn.commit()
