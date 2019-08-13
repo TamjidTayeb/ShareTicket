@@ -13,7 +13,7 @@ tickets = data["activities_data"]
 conn = sqlite3.connect("db.sqlite")
 c = conn.cursor()
 
-# Add activity to short_activity_table
+# Add activity to short_activity table
 def addShort(ticket):
     activity = ticket["activity"]
     note = activity["note"]
@@ -27,7 +27,7 @@ def addShort(ticket):
         (ticketId,noteType,noteId)
     )
 
-# Add activity to long_activity_table
+# Add activity to long_activity table
 def addLong(ticket):
     activity = ticket["activity"]
     ticketId = ticket["ticket_id"]
@@ -43,11 +43,13 @@ def addLong(ticket):
     shipmentDate = activity["shipment_date"]
     issueType = activity["issue_type"]
     shipping_address = activity["shipping_address"]
+
     c.execute(
         "INSERT INTO long_activities VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", 
         (ticketId, agentId, status,requester,product,contactedCustomer,category,groupOf,priority,source,shipmentDate,issueType,shipping_address)
     )
 
+# Add ticket info to tickets table
 def addBasic(ticket):
     ticketId = ticket["ticket_id"]
     activityType = ticket["activity_type"]
@@ -59,7 +61,7 @@ def addBasic(ticket):
         (ticketId,activityType,performerType,performerId,performedAt)
     )
 
-
+# Create tickets table
 c.execute(
     """CREATE TABLE IF NOT EXISTS tickets (
             ticket_id integer PRIMARY KEY,
@@ -70,6 +72,7 @@ c.execute(
     )"""
 )
 
+# Create short activities table
 c.execute(
     """CREATE TABLE IF NOT EXISTS short_activities (
             ticket_id integer references tickets(ticket_id) PRIMARY KEY,
@@ -78,6 +81,7 @@ c.execute(
     )"""
 )
 
+# Create long activities table
 c.execute(
     """CREATE TABLE IF NOT EXISTS long_activities (
             ticket_id integer references tickets(ticket_id) PRIMARY KEY,
@@ -95,17 +99,8 @@ c.execute(
             shipping_address text
     )"""
 )
-# c.execute("DROP TABLE long_activities")
-c.execute("SELECT * FROM long_activities")
-print(c.fetchall())
-c.execute("SELECT * FROM short_activities")
-print(c.fetchall())
-c.execute("SELECT * FROM tickets")
-print(c.fetchall())
-conn.commit()
 
-
-# Parse json data
+# Parse and insert json data
 for ticket in tickets:
     if (ticket["activity_type"]==0):
         addBasic(ticket)
@@ -113,10 +108,6 @@ for ticket in tickets:
     else:
         addBasic(ticket)
         addLong(ticket)
-c.execute("SELECT * FROM short_activities")
-print(c.fetchall())
-c.execute("SELECT * FROM long_activities")
-print(c.fetchall())
-c.execute("SELECT * FROM tickets")
-print(c.fetchall())
-# conn.commit()
+
+conn.commit()
+c.close()
