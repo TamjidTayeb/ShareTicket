@@ -115,3 +115,8 @@ for ticket in tickets:
         addLong(ticket)
 c.execute("SELECT * FROM short_activities")
 print(c.fetchall())
+c.execute("SELECT * FROM long_activities")
+print(c.fetchall())
+c.execute("SELECT * FROM tickets")
+print(c.fetchall())
+# conn.commit()
