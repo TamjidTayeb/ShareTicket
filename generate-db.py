@@ -10,18 +10,27 @@ with open(sys.argv[1]) as json_file:
 
 tickets = data["activities_data"]
 
-# Add activity to short_activity_table
-def addShort():
-    return 1
-    print("short")
-
-# Add activity to long_activity_table
-def addLong():
-    return 1
-    print("long")
-
 conn = sqlite3.connect("db.sqlite")
 c = conn.cursor()
+
+# Add activity to short_activity_table
+def addShort(activity):
+    print(activity)
+
+# Add activity to long_activity_table
+def addLong(activity):
+    print(activity)
+
+def addBasic(ticket):
+    ticketId = ticket["ticket_id"]
+    activityType = ticket["activity_type"]
+    performerType = ticket["performer_type"]
+    performerId = ticket["performer_id"]
+    performedAt = ticket["performed_at"]
+    c.execute(
+        "INSERT INTO tickets VALUES (?,?,?,?,?)",(ticketId,activityType,performerType,performerId,performedAt)
+    )
+
 
 c.execute(
     """CREATE TABLE IF NOT EXISTS tickets (
@@ -71,6 +80,11 @@ conn.commit()
 # Parse json data
 for ticket in tickets:
     if (ticket["activity_type"]==0):
-        addShort()
+        addBasic(ticket)
+        addShort(ticket["activity"])
     else:
-        addLong()
+        addBasic(ticket)
+        addLong(ticket["activity"])
+    break
+# c.execute("SELECT * FROM tickets")
+# print(c.fetchall())
