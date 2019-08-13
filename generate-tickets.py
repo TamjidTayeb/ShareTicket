@@ -66,7 +66,7 @@ def randomDate(startDate, endDate):
    delta = end - start
    intDelta = (delta.days * 24 * 60 * 60) + delta.seconds
    randomSecond = randrange(intDelta)
-   return datetime.strftime(start + timedelta(seconds=randomSecond), '%d-%m-%Y %H:%M:%S +0000')
+   return datetime.strftime(start + timedelta(seconds=randomSecond), '%d-%m-%Y %H:%M:%S')
 
 def generateID(array):
     while True:
@@ -129,8 +129,8 @@ for i in range(activitiesCount):
 # Generating and assembling JSON data
 data = {
     "metadata":{
-      "start_at": d1+" + 0000",
-      "end_at": d2+" + 0000",
+      "start_at": d1,
+      "end_at": d2,
       "activities_count": activitiesCount
     },
     "activities_data": activities

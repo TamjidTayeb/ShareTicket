@@ -60,7 +60,6 @@ def addBasic(ticket):
         "INSERT INTO tickets VALUES (?,?,?,?,?)",
         (ticketId,activityType,performerType,performerId,performedAt)
     )
-
 # Create tickets table
 c.execute(
     """CREATE TABLE IF NOT EXISTS tickets (
@@ -94,7 +93,7 @@ c.execute(
             group_of text,
             priority integer,
             source integer,
-            shipment_date text,
+            shipment_date datetime,
             issue_type text,
             shipping_address text
     )"""
@@ -110,4 +109,3 @@ for ticket in tickets:
         addLong(ticket)
 
 conn.commit()
-c.close()
