@@ -14,12 +14,39 @@ conn = sqlite3.connect("db.sqlite")
 c = conn.cursor()
 
 # Add activity to short_activity_table
-def addShort(activity):
-    print(activity)
+def addShort(ticket):
+    activity = ticket["activity"]
+    note = activity["note"]
+
+    ticketId = ticket["ticket_id"]
+    noteType = note["type"]
+    noteId = note["id"]
+
+    c.execute(
+        "INSERT INTO short_activities VALUES (?,?,?)", 
+        (ticketId,noteType,noteId)
+    )
 
 # Add activity to long_activity_table
-def addLong(activity):
-    print(activity)
+def addLong(ticket):
+    activity = ticket["activity"]
+    ticketId = ticket["ticket_id"]
+    agentId = activity["agent_id"]
+    status = activity["status"]
+    requester = activity["requester"]
+    product = activity["product"]
+    contactedCustomer = activity["contacted_customer"]
+    category = activity["category"]
+    groupOf = activity["group"]
+    priority = activity["priority"]
+    source = activity["source"]
+    shipmentDate = activity["shipment_date"]
+    issueType = activity["issue_type"]
+    shipping_address = activity["shipping_address"]
+    c.execute(
+        "INSERT INTO long_activities VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", 
+        (ticketId, agentId, status,requester,product,contactedCustomer,category,groupOf,priority,source,shipmentDate,issueType,shipping_address)
+    )
 
 def addBasic(ticket):
     ticketId = ticket["ticket_id"]
@@ -28,7 +55,8 @@ def addBasic(ticket):
     performerId = ticket["performer_id"]
     performedAt = ticket["performed_at"]
     c.execute(
-        "INSERT INTO tickets VALUES (?,?,?,?,?)",(ticketId,activityType,performerType,performerId,performedAt)
+        "INSERT INTO tickets VALUES (?,?,?,?,?)",
+        (ticketId,activityType,performerType,performerId,performedAt)
     )
 
 
@@ -81,10 +109,9 @@ conn.commit()
 for ticket in tickets:
     if (ticket["activity_type"]==0):
         addBasic(ticket)
-        addShort(ticket["activity"])
+        addShort(ticket)
     else:
         addBasic(ticket)
-        addLong(ticket["activity"])
-    break
-# c.execute("SELECT * FROM tickets")
-# print(c.fetchall())
+        addLong(ticket)
+c.execute("SELECT * FROM short_activities")
+print(c.fetchall())
