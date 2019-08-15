@@ -15,3 +15,6 @@ To run this series of scripts change directory into the project folder and run t
 
 For example: sh runAll.sh 1000 data.json
 
+## Relational Database Design
+Designed using Vertabelo
+![Design]( design.png)
