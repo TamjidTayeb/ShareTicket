@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # $1 is number of tickets to generate
 # $2 is the file to store json data in and to create DB from
 
